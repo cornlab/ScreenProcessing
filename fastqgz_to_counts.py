@@ -39,7 +39,7 @@ def seqFileToCounts(infileName, fastaFileName, countFileName, libraryFasta, star
 		
 	if fileType == 'fqgz':
 		linesPerRead = 4
-		infile = gzip.open(infileName)
+		infile = gzip.open(infileName, 'rt')
 	elif fileType == 'fq':
 		linesPerRead = 4
 		infile = open(infileName)
@@ -62,7 +62,6 @@ def seqFileToCounts(infileName, fastaFileName, countFileName, libraryFasta, star
 
 			else:
 				seq = fastqLine.strip()[startIndex:stopIndex]
-			
 				if i == 1 and len(seq) != expectedReadLength:
 					raise ValueError('Trimmed read length does not match expected reference read length')
 			
@@ -119,7 +118,7 @@ def parseLibraryFasta(libraryFasta):
 	if len(seqToIds) == 0 or len(idsToReadcounts) == 0 or readLengths[0] == 0:
 		raise ValueError('library fasta could not be parsed or contains no sequences')
 	elif max(readLengths) != min(readLengths):
-		print min(readLengths), max(readLengths)
+		print (min(readLengths), max(readLengths))
 		raise ValueError('library reference sequences are of inconsistent lengths')
 
 	return seqToIds, idsToReadcounts, readLengths[0]
@@ -132,7 +131,7 @@ def parseSeqFileNames(fileNameList):
 
 	for inputFileName in fileNameList:					#iterate through entered filenames for sequence files
 		for filename in glob.glob(inputFileName): 		#generate all possible files given wildcards
-			for fileType in zip(*acceptedFileTypes)[0]:	#iterate through allowed filetypes
+			for fileType in list(zip(*acceptedFileTypes))[0]:	#iterate through allowed filetypes
 				if fnmatch.fnmatch(filename,fileType):
 					infileList.append(filename)
 					outfileBaseList.append(os.path.split(filename)[-1].split('.')[0])
@@ -147,7 +146,7 @@ def makeDirectory(path):
 		pass
 
 def printNow(printInput):
-	print printInput
+	print (printInput)
 	sys.stdout.flush()
 
 ### Global variables ###
@@ -213,7 +212,7 @@ if __name__ == '__main__':
 		sys.exit('Error while processing sequencing files: ' + ' '.join(err.args))
 		
 	for filename, result in resultList:
-		print filename + ':\n\t%.2E reads\t%.2E aligning (%.2f%%)' % result
+		print (filename + ':\n\t{:.2E} reads\t{:.2E} aligning ({:.2f}%)'.format(*result))
 	
 	pool.close()
 	pool.join()
