@@ -23,7 +23,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
     try:
         librariesToSublibraries, librariesToTables = parseLibraryConfig(os.path.join(libraryDirectory, defaultLibConfigName))
     except ValueError as err:
-        print ' '.join(err.args)
+        print(' '.join(err.args))
         return
 
     exptParameters, parseStatus, parseString = parseExptConfig(configFile, librariesToSublibraries)
@@ -31,7 +31,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
     printNow(parseString)
 
     if parseStatus > 0: #Critical errors in parsing
-        print 'Exiting due to experiment config file errors\n'
+        print('Exiting due to experiment config file errors\n')
         return
 
     makeDirectory(exptParameters['output_folder'])
@@ -51,7 +51,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
     sublibColumn = libraryTable.apply(lambda row: row['sublibrary'].lower() in exptParameters['sublibraries'], axis=1)
 
     if sum(sublibColumn) == 0:
-        print 'After limiting analysis to specified sublibraries, no elements are left'
+        print('After limiting analysis to specified sublibraries, no elements are left')
         return
 
     libraryTable[sublibColumn].to_csv(outbase + '_librarytable.txt', sep='\t', tupelize_cols = False)
@@ -62,7 +62,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
     columnDict = dict()
     for tup in sorted(exptParameters['counts_file_list']):
         if tup in columnDict:
-            print 'Asserting that tuples of condition, replicate, and count file should be unique; are the cases where this should not be enforced?'
+            print('Asserting that tuples of condition, replicate, and count file should be unique; are the cases where this should not be enforced?')
             raise Exception('condition, replicate, and count file combination already assigned')
         
         countSeries = readCountsFile(tup[2]).reset_index().drop_duplicates('id').set_index('id') #for now also dropping duplicate ids in counts for overlapping linc sublibraries
@@ -176,7 +176,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
     negTable = phenotypeTable.loc[libraryTable[sublibColumn].loc[:,'gene'] == 'negative_control',:]
 
     if exptParameters['generate_pseudogene_dist'] != 'off' and len(exptParameters['analyses']) > 0:
-        print 'Generating a pseudogene distribution from negative controls'
+        print('Generating a pseudogene distribution from negative controls')
         sys.stdout.flush()
 
         pseudoTableList = []
@@ -212,7 +212,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
                     pseudoLibTables.append(pseudoLib)
 
         else:
-            print 'generate_pseudogene_dist parameter not recognized, defaulting to off'
+            print('generate_pseudogene_dist parameter not recognized, defaulting to off')
 
         phenotypeTable = phenotypeTable.append(pd.concat(pseudoTableList))
         libraryTableGeneAnalysis = libraryTable[sublibColumn].append(pd.concat(pseudoLibTables))
@@ -221,7 +221,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
 
     #compute gene scores for replicates, averaged reps, and pseudogenes
     if len(exptParameters['analyses']) > 0:
-        print 'Computing gene scores'
+        print('Computing gene scores')
         sys.stdout.flush()
 
         phenotypeTable_deduplicated = phenotypeTable.loc[libraryTableGeneAnalysis.drop_duplicates(['gene','sequence']).index]
@@ -232,7 +232,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
 
         analysisTables = []
         for analysis in exptParameters['analyses']:
-            print '--' + analysis
+            print('--' + analysis)
             sys.stdout.flush()
 
             analysisTables.append(applyGeneScoreFunction(geneGroups, negTable, analysis, exptParameters['analyses'][analysis]))
@@ -242,7 +242,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
 
         ### collapse the gene-transcript indices into a single score for a gene by best MW p-value, where applicable
         if exptParameters['collapse_to_transcripts'] == True and 'calculate_mw' in exptParameters['analyses']:
-            print 'Collapsing transcript scores to gene scores'
+            print('Collapsing transcript scores to gene scores')
             sys.stdout.flush()
 
             geneTableCollapsed = scoreGeneByBestTranscript(geneTable)
@@ -257,7 +257,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
                 if len(replicateList) == 1 or replicate[:4] == 'ave_': #just plot averaged reps where available
                     screen_analysis.volcanoPlot(tempDataDict, phenotype, replicate, labelHits=True)
 
-    print 'Done!'
+    print('Done!')
 
 #given a gene table indexed by both gene and transcript, score genes by the best m-w p-value per phenotype/replicate
 def scoreGeneByBestTranscript(geneTable):
@@ -317,17 +317,17 @@ def readLibraryFile(libraryFastaFileName, elementTypeFunc, geneNameFunc, miscFun
 
 #print all counts file paths, to assist with making an experiment table
 def printCountsFilePaths(baseDirectoryPathList):
-    print 'Make a tab-delimited file with the following columns:'
-    print 'counts_file\texperiment\tcondition\treplicate_id'
-    print 'and the following list in the counts_file column:'
+    print('Make a tab-delimited file with the following columns:')
+    print('counts_file\texperiment\tcondition\treplicate_id')
+    print('and the following list in the counts_file column:')
     for basePath in baseDirectoryPathList:
         for root, dirs, filenames in os.walk(basePath):
             for filename in fnmatch.filter(filenames,'*.counts'):
-                print os.path.join(root, filename)
+                print(os.path.join(root, filename))
 
 def mergeCountsForExperiments(experimentFileName, libraryTable):
     exptTable = pd.read_csv(experimentFileName, delimiter='\t')
-    print exptTable
+    print(exptTable)
 
     # load in all counts independently
     countsCols = []
@@ -384,7 +384,7 @@ def filterCountsPerExperiment(min_reads, exptsTable,libraryTable):
         exptDfFiltered = exptDf.align(exptDfUnderMin[exptDfUnderMin == False], axis=0, join='right')[0]
         experimentGroups.append(exptDfFiltered)
         
-        print expt, len(exptDfUnderMin[exptDfUnderMin == True])
+        print(expt, len(exptDfUnderMin[exptDfUnderMin == True]))
 
     resultTable = pd.concat(experimentGroups, axis = 1).align(libraryTable, axis=0)[0]
 
