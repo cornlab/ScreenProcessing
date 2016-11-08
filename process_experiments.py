@@ -110,8 +110,8 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
     printNow('Computing sgRNA phenotype scores')
 
     growthValueDict = {(tup[0],tup[1]):tup[2] for tup in exptParameters['growth_value_tuples']}
-    phenotypeList = list(set(zip(*exptParameters['condition_tuples'])[0]))
-    replicateList = sorted(list(set(zip(*exptParameters['counts_file_list'])[1])))
+    phenotypeList = list(set(list(zip(*exptParameters['condition_tuples']))[0]))
+    replicateList = sorted(list(set(list(zip(*exptParameters['counts_file_list']))[1])))
 
     phenotypeScoreDict = dict()
     for (phenotype, condition1, condition2) in exptParameters['condition_tuples']:
