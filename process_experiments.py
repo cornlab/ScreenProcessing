@@ -147,7 +147,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
         printNow('Averaging replicates')
 
         for phenotype in phenotypeList:
-            repCols = pd.DataFrame({(phen,rep):col for (phen,rep), col in phenotypeScoreDict.iteritems() if phen == phenotype})
+            repCols = pd.DataFrame({(phen,rep):col for (phen,rep), col in phenotypeScoreDict.items() if phen == phenotype})
             phenotypeScoreDict[(phenotype,'ave_' + '_'.join(replicateList))] = repCols.mean(axis=1,skipna=False) #average nan and real to nan; otherwise this could lead to data points with just one rep informing results
 
     phenotypeTable = pd.DataFrame(phenotypeScoreDict)
@@ -267,7 +267,8 @@ def scoreGeneByBestTranscript(geneTable):
 
     tupList = []
     bestTransList = []
-    for tup, group in geneTable.groupby(level=range(2),axis=1):
+    lvl=range(2)
+    for tup, group in geneTable.groupby(level=lvl,axis=1):
         tupList.append(tup)
         curFrame = geneTable.loc[zip(bestTranscriptFrame.index,bestTranscriptFrame[tup]),tup]
         bestTransList.append(curFrame.reset_index().set_index('gene'))
