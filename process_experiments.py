@@ -253,7 +253,7 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
             tempDataDict = {'library': libraryTable[sublibColumn],
                             'gene scores': geneTableCollapsed if exptParameters['collapse_to_transcripts'] else geneTable}
                             
-            for (phenotype, replicate), gtable in geneTableCollapsed.groupby(level=[0,1], axis=1):
+            for (phenotype, replicate), gtable in geneTableCollapsed.groupby(level=[0,1], axis=1): # potential bug here - if user specifies collapse_to_transcripts=False, then geneTableCollapsed is referenced before assignment
                 if len(replicateList) == 1 or replicate[:4] == 'ave_': #just plot averaged reps where available
                     screen_analysis.volcanoPlot(tempDataDict, phenotype, replicate, labelHits=True)
 
@@ -267,7 +267,7 @@ def scoreGeneByBestTranscript(geneTable):
 
     tupList = []
     bestTransList = []
-    lvl=range(2)
+    lvl=list(range(2))
     for tup, group in geneTable.groupby(level=lvl,axis=1):
         tupList.append(tup)
         curFrame = geneTable.loc[zip(bestTranscriptFrame.index,bestTranscriptFrame[tup]),tup]
