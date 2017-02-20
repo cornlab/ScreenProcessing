@@ -270,7 +270,7 @@ def scoreGeneByBestTranscript(geneTable):
     lvl=list(range(2))
     for tup, group in geneTable.groupby(level=lvl,axis=1):
         tupList.append(tup)
-        curFrame = geneTable.loc[zip(bestTranscriptFrame.index,bestTranscriptFrame[tup]),tup]
+        curFrame = geneTable.loc[list(zip(bestTranscriptFrame.index,bestTranscriptFrame[tup])),tup]
         bestTransList.append(curFrame.reset_index().set_index('gene'))
 
     return pd.concat(bestTransList, axis=1, keys=tupList)
