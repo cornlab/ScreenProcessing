@@ -88,7 +88,8 @@ def processExperimentsFromConfig(configFile, libraryDirectory, generatePlots='pn
         printNow('-generating scatter plots of counts pre-merger')
     
         tempDataDict = {'library': libraryTable[sublibColumn],
-                        'premerged counts': countsTable}
+                        'premerged counts': countsTable,
+                       'counts': mergedCountsTable}
 
         for (phenotype, replicate), countsCols in exptGroups:
             if len(countsCols.columns) == 1:
