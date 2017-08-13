@@ -3,8 +3,8 @@
 #############################################################
 [experiment_settings]
 
-output_folder = [path to Step2-counts_to_gene_scores]
-experiment_name = ctx_demo
+output_folder = scoring
+experiment_name = lipid
 
 #############################################################
 ##                    Library Settings                     ##
@@ -13,15 +13,15 @@ experiment_name = ctx_demo
 
 #currently CRISPRi_v1 or CRISPRa_v1
 
-library = CRISPRi_v1
+library = CRISPRi_v2_human
 
 #If you are using all sublibraries you don't need to change anything
 #Otherwise, uncomment and edit a list from below:
 
 
 #CRISPRi_v1 sublibraries
-sublibraries =
-    Apoptosis+Cancer+Other_Cancer
+#sublibraries =
+#    Apoptosis+Cancer+Other_Cancer
 #    Drug_Targets+Kinase_Phosphatase
 #    Gene_Expression
 #    Membrane_Proteins
@@ -53,12 +53,12 @@ sublibraries =
 #	/home/max/counts/Sample1_index12_CRISPRi.counts:untreated|Rep1
 
 counts_file_string =
-	[index 10]:T0|Rep1
-	[index 3]:untreated|Rep1
-	[index 1]:treated|Rep1
-	[index 12]:T0|Rep2
-	[index 6]:untreated|Rep2
-	[index 14]:treated|Rep2
+	/data/rachel/lipid120116/test/max/count_files/Unsorted_1_S7_L002_R1_001_CRISPRi_v2_human.trim_1_29_forward.fa.counts:back|Rep1
+	/data/rachel/lipid120116/test/max/count_files/Unsorted_2_S8_L002_R1_001_CRISPRi_v2_human.trim_1_29_forward.fa.counts:back|Rep2
+	/data/rachel/lipid120116/test/max/count_files/Low_1_S9_L002_R1_001_CRISPRi_v2_human.trim_1_29_forward.fa.counts:low|Rep1
+	/data/rachel/lipid120116/test/max/count_files/Low_2_S10_L002_R1_001_CRISPRi_v2_human.trim_1_29_forward.fa.counts:low|Rep2
+	/data/rachel/lipid120116/test/max/count_files/High_1_S11_L002_R1_001_CRISPRi_v2_human.trim_1_29_forward.fa.counts:high|Rep1
+	/data/rachel/lipid120116/test/max/count_files/High_2_S12_L002_R1_001_CRISPRi_v2_human.trim_1_29_forward.fa.counts:high|Rep2
 	
 #############################################################
 ##                     Filter Settings                     ##
@@ -84,9 +84,8 @@ minimum_reads = 50
 
 
 condition_string =
-	gamma:T0:untreated
-	rho:untreated:treated
-	tau:T0:treated
+	low:back:low
+	high:back:high
 
 #Different possible treatments for 0 values:
 #By default, for any comparison involving a 0, add 1 to both values,
@@ -110,13 +109,13 @@ pseudocount = 1
 #   rho:Rep1:7.13
 
 
-growth_value_string =
-	gamma:Rep2:11.1519761622
-	rho:Rep2:8.44158496881
-	tau:Rep2:2.7103911934
-	gamma:Rep1:10.7412001484
-	rho:Rep1:7.82935376641
-	tau:Rep1:2.9118463821
+#growth_value_string =
+#	gamma:Rep2:11.1519761622
+#	rho:Rep2:8.44158496881
+#	tau:Rep2:2.7103911934
+#	gamma:Rep1:10.7412001484
+#	rho:Rep1:7.82935376641
+#	tau:Rep1:2.9118463821
 	
 
 
@@ -139,7 +138,7 @@ collapse_to_transcripts = True
 generate_pseudogene_dist = auto
 
 #sgRNAs/gene for your library
-#pseudogene_size = 10
+pseudogene_size = 5
 
 #approx number of genes in your library
 #num_pseudogenes = 16000
